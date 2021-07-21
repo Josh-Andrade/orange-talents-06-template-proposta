@@ -4,6 +4,8 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import br.com.orange.proposta.proposta.acompanhamentoproposta.controller.dto.EnderecoResponse;
+
 @Embeddable
 public class Endereco {
 	
@@ -38,5 +40,7 @@ public class Endereco {
 		this.cep = cep;
 	}
 	
-	
+	public EnderecoResponse toResponse() {
+		return new EnderecoResponse(logradouro, complemento, bairro, numero);
+	}
 }

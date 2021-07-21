@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,8 +61,9 @@ public class NovaPropostaController {
 	public ResponseEntity<?> criarNovaProposta(@RequestBody @Valid NovaPropostaRequest request,
 			UriComponentsBuilder uriBuilder) {
 		EnderecoRequest buscarEnderecoViaCep = buscarEndereco(request.getCep());
-		if (Boolean.parseBoolean(buscarEnderecoViaCep.getErro()))
-			return ResponseEntity.badRequest().body("Não foi encontrado nenhum endereço com o cep informado");
+		
+		Assert.isTrue(!Boolean.parseBoolean(buscarEnderecoViaCep.getErro()),
+				"Não foi encontrado nenhum endereço com o cep informado");
 
 		Proposta proposta = propostaRepository.save(request.toEntity(buscarEnderecoViaCep));
 		URI uri = UriComponentsBuilder.fromPath(PROPOSTA_PATH).buildAndExpand(proposta.getId()).toUri();

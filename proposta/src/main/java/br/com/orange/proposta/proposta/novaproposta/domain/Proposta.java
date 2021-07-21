@@ -14,7 +14,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import br.com.orange.proposta.proposta.acompanhamentoproposta.controller.dto.PropostaResponse;
 import br.com.orange.proposta.proposta.config.validation.CPFOrCNPJ;
+import br.com.orange.proposta.proposta.novaproposta.controller.dto.CartaoResponse;
 
 @Entity
 public class Proposta {
@@ -74,6 +76,12 @@ public class Proposta {
 		this.cartao = cartao;
 	}
 	
-	
+	public PropostaResponse toResponse() {
+		return new PropostaResponse(documento, nome, verificarCartao(), endereco.toResponse(), status);
+	}
+
+	private CartaoResponse verificarCartao() {
+		return status == Status.NAO_ELEGIVEL ? null : cartao.toResponse();
+	}
 
 }

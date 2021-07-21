@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Embeddable;
 
+import br.com.orange.proposta.proposta.novaproposta.controller.dto.CartaoResponse;
+
 @Embeddable
 public class Cartao {
 
@@ -13,10 +15,13 @@ public class Cartao {
 	@Deprecated
 	public Cartao() {
 	}
-	
+
 	public Cartao(String id, BigDecimal limite) {
 		this.numeroCartao = id;
 		this.limite = limite;
 	}
 
+	public CartaoResponse toResponse() {
+		return new CartaoResponse(numeroCartao, limite);
+	}
 }

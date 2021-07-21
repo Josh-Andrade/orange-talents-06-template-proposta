@@ -15,6 +15,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/api/proposta").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/proposta/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
 				.anyRequest().authenticated().and()
 				.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

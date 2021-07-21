@@ -38,7 +38,9 @@ public class Proposta {
 	private Endereco endereco;
 	@Enumerated(EnumType.STRING)
 	private Status status;
-
+	@Embedded
+	private Cartao cartao;
+	
 	@Deprecated
 	public Proposta() {
 	}
@@ -67,5 +69,11 @@ public class Proposta {
 	public String getNome() {
 		return nome;
 	}
+
+	public void setCartao(Cartao cartao) {
+		this.cartao = cartao;
+	}
+	
+	
 
 }

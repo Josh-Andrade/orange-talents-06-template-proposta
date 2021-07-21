@@ -25,8 +25,9 @@ public class AcompanhamentoPropostaController {
 	@GetMapping("/proposta/{id}")
 	public ResponseEntity<PropostaResponse> acompanharProposta(@PathVariable Long id) {
 		Optional<Proposta> optionalProposta = propostaRepository.findById(id);
-		if(optionalProposta.isEmpty())
+		if(optionalProposta.isEmpty()) {
 			return ResponseEntity.notFound().build();
+		}
 		
 		return ResponseEntity.ok(optionalProposta.get().toResponse());
 	}

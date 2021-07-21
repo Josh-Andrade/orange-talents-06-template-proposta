@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.com.orange.proposta.proposta.novaproposta.controller.dto.CartaoResponse;
 
-@FeignClient(url = "http://localhost:8888", name = "cartao-resource")
+@FeignClient(url = "${contas.host}", name = "cartao-resource")
 public interface AssociarCartaoRequest {
 	
 	@GetMapping("/api/cartoes?idProposta={id}")

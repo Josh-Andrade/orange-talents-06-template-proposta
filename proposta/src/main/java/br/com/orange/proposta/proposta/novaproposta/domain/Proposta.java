@@ -81,7 +81,7 @@ public class Proposta {
 	}
 
 	private CartaoResponse verificarCartao() {
-		return status == Status.NAO_ELEGIVEL ? null : cartao.toResponse();
+		return cartao == null ? null : cartao.toResponse();
 	}
 
 }

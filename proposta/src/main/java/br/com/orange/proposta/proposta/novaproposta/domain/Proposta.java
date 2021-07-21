@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import br.com.orange.proposta.proposta.config.validation.CPFOrCNPJ;
-import br.com.orange.proposta.proposta.novaproposta.request.EnderecoRequest;
 
 @Entity
 public class Proposta {
@@ -35,24 +36,36 @@ public class Proposta {
 	@NotNull
 	@Embedded
 	private Endereco endereco;
+	@Enumerated(EnumType.STRING)
+	private Status status;
 
 	@Deprecated
 	public Proposta() {
 	}
 
 	public Proposta(@NotBlank String documento, @Email @NotBlank String email, @NotBlank String nome,
-			@NotNull @Positive BigDecimal salario, @NotNull EnderecoRequest endereco, String complemento,
-			@NotNull Integer numero) {
+			@NotNull @Positive BigDecimal salario, @NotNull Endereco endereco) {
 		this.documento = documento;
 		this.email = email;
 		this.nome = nome;
 		this.salario = salario;
-		this.endereco = endereco.toEntity(complemento, numero);
+		this.endereco = endereco;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public String getDocumento() {
+		return documento;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
 }

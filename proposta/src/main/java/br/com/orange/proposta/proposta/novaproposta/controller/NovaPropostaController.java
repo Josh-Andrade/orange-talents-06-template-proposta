@@ -4,6 +4,7 @@ import static br.com.orange.proposta.proposta.shared.Constants.PROPOSTA_PATH;
 
 import java.net.URI;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,15 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.orange.proposta.proposta.config.validation.DocumentoPropostaValidator;
-import br.com.orange.proposta.proposta.novaproposta.controller.repository.PropostaRepository;
+import br.com.orange.proposta.proposta.novaproposta.controller.dto.AnaliseRequest;
+import br.com.orange.proposta.proposta.novaproposta.controller.dto.AnaliseResponse;
+import br.com.orange.proposta.proposta.novaproposta.controller.dto.EnderecoRequest;
+import br.com.orange.proposta.proposta.novaproposta.controller.dto.NovaPropostaRequest;
 import br.com.orange.proposta.proposta.novaproposta.domain.Proposta;
+import br.com.orange.proposta.proposta.novaproposta.domain.Status;
+import br.com.orange.proposta.proposta.novaproposta.external.AnaliseFinanceiraRequest;
 import br.com.orange.proposta.proposta.novaproposta.external.ViaCepRequest;
-import br.com.orange.proposta.proposta.novaproposta.request.EnderecoRequest;
-import br.com.orange.proposta.proposta.novaproposta.request.NovaPropostaRequest;
+import br.com.orange.proposta.proposta.novaproposta.repository.PropostaRepository;
 import feign.FeignException;
 
 @RestController
@@ -35,11 +40,14 @@ public class NovaPropostaController {
 
 	private DocumentoPropostaValidator documentoPropostaValidator;
 
+	private AnaliseFinanceiraRequest analiseFinanceiraRequest;
+
 	public NovaPropostaController(ViaCepRequest viaCepRequest, PropostaRepository propostaRepository,
-			DocumentoPropostaValidator documentoPropostaValidator) {
+			DocumentoPropostaValidator documentoPropostaValidator, AnaliseFinanceiraRequest analiseFinanceiraRequest) {
 		this.viaCepRequest = viaCepRequest;
 		this.propostaRepository = propostaRepository;
 		this.documentoPropostaValidator = documentoPropostaValidator;
+		this.analiseFinanceiraRequest = analiseFinanceiraRequest;
 	}
 
 	@InitBinder
@@ -48,16 +56,28 @@ public class NovaPropostaController {
 	}
 
 	@PostMapping("/proposta")
+	@Transactional
 	public ResponseEntity<?> criarNovaProposta(@RequestBody @Valid NovaPropostaRequest request,
 			UriComponentsBuilder uriBuilder) {
 		EnderecoRequest buscarEnderecoViaCep = buscarEndereco(request.getCep());
 		if (Boolean.parseBoolean(buscarEnderecoViaCep.getErro()))
 			return ResponseEntity.badRequest().body("Não foi encontrado nenhum endereço com o cep informado");
-
+		
 		Proposta proposta = propostaRepository.save(request.toEntity(buscarEnderecoViaCep));
-
 		URI uri = UriComponentsBuilder.fromPath(PROPOSTA_PATH).buildAndExpand(proposta.getId()).toUri();
+		
+		proposta.setStatus(analiseFinanceiraSolicitante(proposta));
 		return ResponseEntity.created(uri).body(uri);
+	}
+
+	private Status analiseFinanceiraSolicitante(Proposta proposta) {
+		try {
+			AnaliseResponse analiseResponse = analiseFinanceiraRequest.analisarSolicitante(new AnaliseRequest(proposta));
+			return Status.getStatusPorDescricao(analiseResponse.getResultadoSolicitacao());
+		} catch (FeignException e) {
+			return Status.NAO_ELEGIVEL;
+		}
+		
 	}
 
 	private EnderecoRequest buscarEndereco(String cep) {

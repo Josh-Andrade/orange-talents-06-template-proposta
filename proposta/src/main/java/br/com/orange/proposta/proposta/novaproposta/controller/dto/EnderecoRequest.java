@@ -1,4 +1,4 @@
-package br.com.orange.proposta.proposta.novaproposta.request;
+package br.com.orange.proposta.proposta.novaproposta.controller.dto;
 
 import javax.validation.constraints.NotBlank;
 

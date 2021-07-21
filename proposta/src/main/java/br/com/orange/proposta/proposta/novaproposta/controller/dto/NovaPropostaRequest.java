@@ -1,4 +1,4 @@
-package br.com.orange.proposta.proposta.novaproposta.request;
+package br.com.orange.proposta.proposta.novaproposta.controller.dto;
 
 import java.math.BigDecimal;
 
@@ -57,7 +57,7 @@ public class NovaPropostaRequest {
 	}
 
 	public Proposta toEntity(EnderecoRequest endereco) {
-		return new Proposta(documento, email, nome, salario, endereco, complemento, numero);
+		return new Proposta(documento, email, nome, salario, endereco.toEntity(complemento, numero));
 	}
 
 }

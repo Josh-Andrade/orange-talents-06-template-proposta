@@ -7,8 +7,8 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.orange.proposta.proposta.novaproposta.controller.repository.PropostaRepository;
-import br.com.orange.proposta.proposta.novaproposta.request.NovaPropostaRequest;
+import br.com.orange.proposta.proposta.novaproposta.controller.dto.NovaPropostaRequest;
+import br.com.orange.proposta.proposta.novaproposta.repository.PropostaRepository;
 
 @Component
 public class DocumentoPropostaValidator implements Validator {

@@ -1,4 +1,4 @@
-package br.com.orange.proposta.proposta.novaproposta.controller.repository;
+package br.com.orange.proposta.proposta.novaproposta.repository;
 
 import java.util.Optional;
 

@@ -62,22 +62,22 @@ public class NovaPropostaController {
 		EnderecoRequest buscarEnderecoViaCep = buscarEndereco(request.getCep());
 		if (Boolean.parseBoolean(buscarEnderecoViaCep.getErro()))
 			return ResponseEntity.badRequest().body("Não foi encontrado nenhum endereço com o cep informado");
-		
+
 		Proposta proposta = propostaRepository.save(request.toEntity(buscarEnderecoViaCep));
 		URI uri = UriComponentsBuilder.fromPath(PROPOSTA_PATH).buildAndExpand(proposta.getId()).toUri();
-		
+
 		proposta.setStatus(analiseFinanceiraSolicitante(proposta));
 		return ResponseEntity.created(uri).body(uri);
 	}
 
 	private Status analiseFinanceiraSolicitante(Proposta proposta) {
 		try {
-			AnaliseResponse analiseResponse = analiseFinanceiraRequest.analisarSolicitante(new AnaliseRequest(proposta));
+			AnaliseResponse analiseResponse = analiseFinanceiraRequest
+					.analisarSolicitante(new AnaliseRequest(proposta));
 			return Status.getStatusPorDescricao(analiseResponse.getResultadoSolicitacao());
 		} catch (FeignException e) {
 			return Status.NAO_ELEGIVEL;
 		}
-		
 	}
 
 	private EnderecoRequest buscarEndereco(String cep) {

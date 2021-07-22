@@ -33,7 +33,7 @@ public class AssociarCartaoService {
 	@Scheduled(fixedDelay = 50000)
 	@Transactional
 	public void associarCartao() {
-		List<Proposta> propostasElegiveis = propostaRepository.findByStatus(Status.ELEGIVEL);
+		List<Proposta> propostasElegiveis = propostaRepository.findByStatusAndCartao_NumeroCartaoIsNull(Status.ELEGIVEL);
 		for (Proposta proposta : propostasElegiveis) {
 			try {
 				CartaoResponse cartaoResponse = associarCartaoRequest.associarCartao(proposta.getId().toString());
@@ -41,7 +41,6 @@ public class AssociarCartaoService {
 			} catch (FeignException e) {
 				continue;
 			}
-
 		}
 	}
 }

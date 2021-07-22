@@ -12,15 +12,15 @@ services:
     depends_on:
       - mysql
     environment:
-      SPRING_DATASOURCE_URL:  jdbc:mysql://db_proposta:3306/ml?&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+      SPRING_DATASOURCE_URL:  jdbc:mysql://db_proposta:3306/proposta?&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: zupper
       SPRING_PROFILES_ACTIVE: prod
       CONTAS_ENDPOINT:  http://contas:8888
       ANALISE_ENDPOINT: http://analise:9999
       VIACEP_ENDPOINT:  https://viacep.com.br/ws/
-      KEYCLOAK_ISSUER_URI:  http://keycloak:18080/auth/realms/proposta-users
-      KEYCLOAK_JWK__SET_URI:  http://localhost:18080/auth/realms/proposta-users/protocol/openid-connect/certs
+      KEYCLOAK_ISSUER_URI:  http://localhost:18080/auth/realms/proposta-users
+      KEYCLOAK_JWK_SET_URI:  http://keycloak:8080/auth/realms/proposta-users/protocol/openid-connect/certs
       
   mysql:
     image:  mysql
@@ -29,7 +29,7 @@ services:
     restart:  always
     container_name: db_proposta
     environment:
-      MYSQL_DATABASE: ml
+      MYSQL_DATABASE: proposta
       MYSQL_ROOT_PASSWORD:  zupper
     volumes:
       - mysql-volume:/var/lib/mysql

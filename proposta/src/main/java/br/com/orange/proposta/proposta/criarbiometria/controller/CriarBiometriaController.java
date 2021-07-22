@@ -35,9 +35,9 @@ public class CriarBiometriaController {
 		this.biometriaRepository = biometriaRepository;
 	}
 
-	@PostMapping("/biometria/{id}")
+	@PostMapping("/biometria/{numeroCartao}")
 	@Transactional
-	public ResponseEntity<?> criarBiometria(@PathVariable("id") String numeroCartao,
+	public ResponseEntity<?> criarBiometria(@PathVariable("numeroCartao") String numeroCartao,
 			@Valid @RequestBody BiometriaRequest request, UriComponentsBuilder uriBuilder) {
 
 		if (validarNumeroCartao(numeroCartao))

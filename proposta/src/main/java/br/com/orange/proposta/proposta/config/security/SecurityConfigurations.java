@@ -17,6 +17,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter{
 				.antMatchers(HttpMethod.POST, "/api/proposta").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/proposta/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+				.antMatchers(HttpMethod.POST, "/api/biometria/**").permitAll()
 				.anyRequest().authenticated().and()
 				.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}

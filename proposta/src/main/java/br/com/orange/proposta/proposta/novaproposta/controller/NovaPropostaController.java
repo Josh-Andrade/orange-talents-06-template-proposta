@@ -58,8 +58,7 @@ public class NovaPropostaController {
 
 	@PostMapping("/proposta")
 	@Transactional
-	public ResponseEntity<?> criarNovaProposta(@RequestBody @Valid NovaPropostaRequest request,
-			UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<?> criarNovaProposta(@RequestBody @Valid NovaPropostaRequest request) {
 		EnderecoRequest buscarEnderecoViaCep = buscarEndereco(request.getCep());
 		
 		Assert.isTrue(!Boolean.parseBoolean(buscarEnderecoViaCep.getErro()),

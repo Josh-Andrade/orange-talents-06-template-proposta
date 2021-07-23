@@ -1,13 +1,13 @@
 version: '3'
 services:
-  ot6:
+  proposta:
     build:
       dockerfile: ./Dockerfile
       context: .
+    container_name: proposta
     ports:
       - "8081:8080"
     restart:  always
-    container_name: proposta
     image:  proposta_ot6
     depends_on:
       - mysql
@@ -21,7 +21,8 @@ services:
       VIACEP_ENDPOINT:  https://viacep.com.br/ws/
       KEYCLOAK_ISSUER_URI:  http://localhost:18080/auth/realms/proposta-users
       KEYCLOAK_JWK_SET_URI:  http://keycloak:8080/auth/realms/proposta-users/protocol/openid-connect/certs
-      
+    networks:
+      - proposta      
   mysql:
     image:  mysql
     ports:
@@ -33,14 +34,16 @@ services:
       MYSQL_ROOT_PASSWORD:  zupper
     volumes:
       - mysql-volume:/var/lib/mysql
-      
+    networks:
+      - proposta       
   zookeeper:
     image: "confluentinc/cp-zookeeper:5.2.1"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_SYNC_LIMIT: 2
-
+    networks:
+      - proposta
   kafka:
     image: "confluentinc/cp-kafka:5.2.1"
     ports:
@@ -54,7 +57,8 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-
+    networks:
+      - proposta
   postgres:
     image: 'postgres:alpine'
     volumes:
@@ -66,7 +70,8 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: keycloak
       POSTGRES_HOST: postgres
-
+    networks:
+      - proposta
   keycloak:
     image: jboss/keycloak
     ports:
@@ -94,7 +99,8 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: Pa55w0rd
       POSTGRES_PORT_5432_TCP_ADDR: 127.0.0.1
-
+    networks:
+      - proposta
   analise:
     image: 'zupacademy/analise-financeira'
     ports:
@@ -104,7 +110,8 @@ services:
       LOG_LEVEL: INFO
       URL_SISTEMA_CARTAO: http://contas:8888/api/cartoes
       JAEGER_ENDPOINT: http://jaeger:14268/api/traces
-
+    networks:
+      - proposta
   contas:
     image: 'zupacademy/contas'
     ports:
@@ -113,7 +120,8 @@ services:
       SERVER_PORT: 8888
       LOG_LEVEL: INFO
       JAEGER_ENDPOINT: http://jaeger:14268/api/traces
-
+    networks:
+      - proposta
   transacoes:
     image: 'zupacademy/transacoes'
     ports:
@@ -125,7 +133,8 @@ services:
       LOG_LEVEL: INFO
       KAFKA_HOST: "kafka:29092"
       JAEGER_ENDPOINT: http://jaeger:14268/api/traces
-
+    networks:
+      - proposta
   jaeger:
     image: jaegertracing/all-in-one
     ports:
@@ -139,25 +148,27 @@ services:
       - 9411:9411
     environment:
       COLLECTOR_ZIPKIN_HTTP_PORT: 9411
-
+    networks:
+      - proposta
   prometheus:
     image: prom/prometheus
     volumes:
      - prometheus-volume:/etc/prometheus/
-    network_mode: bridge
+     - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
-
+    networks:
+      - proposta
   grafana:
     image: grafana/grafana
     volumes:
       - grafana-volume:/var/lib/grafana
-    network_mode: bridge
     ports:
       - "3000:3000"
     depends_on:
       - prometheus
-
+    networks:
+      - proposta
   vault:
     image: vault:1.5.3
     ports:
@@ -166,9 +177,12 @@ services:
       VAULT_DEV_ROOT_TOKEN_ID: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_TOKEN: ee413645-dbe8-4848-afc6-6bb2768ada75
       VAULT_ADDR: http://127.0.0.1:8200
-
+    networks:
+      - proposta
 volumes:
   grafana-volume:
   prometheus-volume:
   postgres-volume:
   mysql-volume:
+networks:
+  proposta:

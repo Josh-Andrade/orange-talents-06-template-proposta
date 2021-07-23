@@ -1,4 +1,4 @@
-package br.com.orange.proposta.proposta.novaproposta.controller.dto;
+package br.com.orange.proposta.proposta.shared.external.dto;
 
 import br.com.orange.proposta.proposta.novaproposta.domain.Proposta;
 

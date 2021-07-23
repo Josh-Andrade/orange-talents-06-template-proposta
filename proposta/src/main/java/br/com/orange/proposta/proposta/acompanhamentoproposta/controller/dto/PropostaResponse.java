@@ -1,7 +1,7 @@
 package br.com.orange.proposta.proposta.acompanhamentoproposta.controller.dto;
 
-import br.com.orange.proposta.proposta.novaproposta.controller.dto.CartaoResponse;
 import br.com.orange.proposta.proposta.novaproposta.domain.Status;
+import br.com.orange.proposta.proposta.shared.external.dto.CartaoResponse;
 
 public class PropostaResponse {
 

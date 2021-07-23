@@ -14,6 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 import br.com.orange.proposta.proposta.bloqueiocartao.domain.CartaoBloqueado;
 import br.com.orange.proposta.proposta.bloqueiocartao.repository.CartaoBloqueadoRepository;
 import br.com.orange.proposta.proposta.novaproposta.repository.PropostaRepository;
+import br.com.orange.proposta.proposta.shared.external.BloquearCartaoRequest;
+import br.com.orange.proposta.proposta.shared.external.VerificarCartaoRequest;
+import br.com.orange.proposta.proposta.shared.external.dto.SistemaResponsavelRequest;
 
 @RestController
 @RequestMapping("/api")
@@ -23,33 +26,38 @@ public class BloqueioCartaoController {
 
 	private CartaoBloqueadoRepository cartaoBloqueadoRepository;
 
+	private BloquearCartaoRequest bloquearCartaoRequest;
+
+	private VerificarCartaoRequest verificarCartaoRequest;
+
 	public BloqueioCartaoController(PropostaRepository propostaRepository,
-			CartaoBloqueadoRepository cartaoBloqueadoRepository) {
+			CartaoBloqueadoRepository cartaoBloqueadoRepository, BloquearCartaoRequest bloquearCartaoRequest,
+			VerificarCartaoRequest verificarCartaoRequest) {
 		this.propostaRepository = propostaRepository;
 		this.cartaoBloqueadoRepository = cartaoBloqueadoRepository;
+		this.bloquearCartaoRequest = bloquearCartaoRequest;
+		this.verificarCartaoRequest = verificarCartaoRequest;
 	}
 
 	@PostMapping("/cartao/bloquear/{numeroCartao}")
 	@Transactional
 	public ResponseEntity<?> bloquearCartao(@PathVariable("numeroCartao") String numeroCartao,
 			HttpServletRequest request) {
+
 		verificarSeCartaoExiste(numeroCartao);
+		verificarSeCartaoExisteSistemaLegado(numeroCartao);
 		verificarSeCartaoJaFoiBloqueado(numeroCartao);
-		cartaoBloqueadoRepository
-				.save(new CartaoBloqueado(numeroCartao, retornaUserAgent(request), retornaIp(request)));
+		notificarSistemaLegado(numeroCartao, request);
 
 		return ResponseEntity.ok().build();
 	}
 
-	private String retornaIp(HttpServletRequest request) {
-		if (request.getHeader("X-Forwarded-For") == null) {
-			return request.getRemoteAddr();
+	private void verificarSeCartaoExisteSistemaLegado(String numeroCartao) {
+		try {
+			verificarCartaoRequest.verificarSeCartaoExiste(numeroCartao);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não encontrado");
 		}
-		return request.getHeader("X-Forwarded-For");
-	}
-
-	private String retornaUserAgent(HttpServletRequest request) {
-		return request.getHeader("User-Agent");
 	}
 
 	private void verificarSeCartaoJaFoiBloqueado(String numeroCartao) {
@@ -60,5 +68,25 @@ public class BloqueioCartaoController {
 	private void verificarSeCartaoExiste(String numeroCartao) {
 		if (propostaRepository.findByCartao_NumeroCartao(numeroCartao).isEmpty())
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não encontrado");
+	}
+
+	private void notificarSistemaLegado(String numeroCartao, HttpServletRequest request) {
+		try {
+			if (bloquearCartaoRequest.bloquearCartao(numeroCartao,
+					new SistemaResponsavelRequest("Proposta")) == "BLOQUEADO")
+				cartaoBloqueadoRepository
+						.save(new CartaoBloqueado(numeroCartao, retornaUserAgent(request), retornaIp(request)));
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ocorreu um erro ao tentar bloquear o cartão");
+		}
+	}
+
+	private String retornaIp(HttpServletRequest request) {
+		return request.getHeader("X-Forwarded-For") != null ? request.getHeader("X-Forwarded-For")
+				: request.getRemoteAddr();
+	}
+
+	private String retornaUserAgent(HttpServletRequest request) {
+		return request.getHeader("User-Agent");
 	}
 }

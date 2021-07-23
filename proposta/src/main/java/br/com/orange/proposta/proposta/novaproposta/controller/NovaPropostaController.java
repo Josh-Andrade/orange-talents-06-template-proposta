@@ -20,15 +20,15 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.orange.proposta.proposta.config.validation.DocumentoPropostaValidator;
-import br.com.orange.proposta.proposta.novaproposta.controller.dto.AnaliseRequest;
-import br.com.orange.proposta.proposta.novaproposta.controller.dto.AnaliseResponse;
 import br.com.orange.proposta.proposta.novaproposta.controller.dto.EnderecoRequest;
 import br.com.orange.proposta.proposta.novaproposta.controller.dto.NovaPropostaRequest;
 import br.com.orange.proposta.proposta.novaproposta.domain.Proposta;
 import br.com.orange.proposta.proposta.novaproposta.domain.Status;
-import br.com.orange.proposta.proposta.novaproposta.external.AnaliseFinanceiraRequest;
-import br.com.orange.proposta.proposta.novaproposta.external.ViaCepRequest;
 import br.com.orange.proposta.proposta.novaproposta.repository.PropostaRepository;
+import br.com.orange.proposta.proposta.shared.external.AnaliseFinanceiraRequest;
+import br.com.orange.proposta.proposta.shared.external.ViaCepRequest;
+import br.com.orange.proposta.proposta.shared.external.dto.AnaliseRequest;
+import br.com.orange.proposta.proposta.shared.external.dto.AnaliseResponse;
 import feign.FeignException;
 
 @RestController

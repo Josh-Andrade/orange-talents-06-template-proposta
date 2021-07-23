@@ -16,7 +16,7 @@ import javax.validation.constraints.Positive;
 
 import br.com.orange.proposta.proposta.acompanhamentoproposta.controller.dto.PropostaResponse;
 import br.com.orange.proposta.proposta.config.validation.CPFOrCNPJ;
-import br.com.orange.proposta.proposta.novaproposta.controller.dto.CartaoResponse;
+import br.com.orange.proposta.proposta.shared.external.dto.CartaoResponse;
 
 @Entity
 public class Proposta {

@@ -9,11 +9,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import br.com.orange.proposta.proposta.novaproposta.controller.dto.CartaoResponse;
 import br.com.orange.proposta.proposta.novaproposta.domain.Proposta;
 import br.com.orange.proposta.proposta.novaproposta.domain.Status;
-import br.com.orange.proposta.proposta.novaproposta.external.AssociarCartaoRequest;
 import br.com.orange.proposta.proposta.novaproposta.repository.PropostaRepository;
+import br.com.orange.proposta.proposta.shared.external.AssociarCartaoRequest;
+import br.com.orange.proposta.proposta.shared.external.dto.CartaoResponse;
 import feign.FeignException;
 
 @EnableAsync

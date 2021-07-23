@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Embeddable;
 
-import br.com.orange.proposta.proposta.novaproposta.controller.dto.CartaoResponse;
+import br.com.orange.proposta.proposta.shared.external.dto.CartaoResponse;
 
 @Embeddable
 public class Cartao {

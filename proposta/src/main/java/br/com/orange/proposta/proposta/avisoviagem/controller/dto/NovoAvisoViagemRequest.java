@@ -11,20 +11,29 @@ import org.springframework.util.Assert;
 import br.com.orange.proposta.proposta.avisoviagem.domain.AvisoViagem;
 
 public class NovoAvisoViagemRequest {
-	
+
 	@NotBlank
-	private String destinoViagem;
+	private String destino;
 	@NotNull
 	@Future
-	private LocalDate dataTermino;
-	
-	public NovoAvisoViagemRequest(String destinoViagem, LocalDate dataTermino) {
-		this.destinoViagem = destinoViagem;
-		this.dataTermino = dataTermino;
+	private LocalDate validoAte;
+
+	public NovoAvisoViagemRequest(String destino, LocalDate validoAte) {
+		this.destino = destino;
+		this.validoAte = validoAte;
 	}
-	
+
 	public AvisoViagem toEntity(String numeroCartao, String userAgent, String ipCliente) {
-		Assert.isTrue(dataTermino.isAfter(LocalDate.now()), "Data final da viagem deve ser futura");
-		return new AvisoViagem(numeroCartao, destinoViagem, dataTermino, userAgent, ipCliente);
+		Assert.isTrue(validoAte.isAfter(LocalDate.now()), "Data final da viagem deve ser futura");
+		return new AvisoViagem(numeroCartao, destino, validoAte, userAgent, ipCliente);
 	}
+
+	public String getDestino() {
+		return destino;
+	}
+
+	public LocalDate getValidoAte() {
+		return validoAte;
+	}
+
 }

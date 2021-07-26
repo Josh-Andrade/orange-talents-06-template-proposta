@@ -19,9 +19,7 @@ public class VerificarSeCartaoExisteSistemaLegado implements CartaoEventos {
 	public void verificarNumeroCartao(String numeroCartao) {
 		try {
 			verificarCartaoRequest.verificarSeCartaoExiste(numeroCartao);
-			System.out.println("TRY sistema legado");
 		} catch (Exception e) {
-			System.out.println("CATCH sistema legado");
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não encontrado");
 		}
 	}

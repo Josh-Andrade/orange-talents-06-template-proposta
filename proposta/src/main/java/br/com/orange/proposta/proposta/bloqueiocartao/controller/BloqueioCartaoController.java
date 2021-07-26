@@ -19,6 +19,7 @@ import br.com.orange.proposta.proposta.shared.RequestUtils;
 import br.com.orange.proposta.proposta.shared.external.BloquearCartaoRequest;
 import br.com.orange.proposta.proposta.shared.external.dto.SistemaResponsavelRequest;
 import br.com.orange.proposta.proposta.shared.verificacartao.CartaoEventos;
+import feign.FeignException;
 
 @RestController
 @RequestMapping("/api")
@@ -58,8 +59,8 @@ public class BloqueioCartaoController {
 					new SistemaResponsavelRequest("Proposta")).getResultado().equals("BLOQUEADO"))
 				cartaoBloqueadoRepository.save(new CartaoBloqueado(numeroCartao, RequestUtils.retornaUserAgent(request),
 						RequestUtils.retornaIp(request)));
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ocorreu um erro ao tentar bloquear o cartão");
+		} catch (FeignException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro ao tentar bloquear o cartão");
 		}
 	}
 }

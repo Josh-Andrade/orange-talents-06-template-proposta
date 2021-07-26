@@ -17,11 +17,9 @@ public class VerificarCartaoBloqueado implements CartaoEventos {
 
 	@Override
 	public void verificarNumeroCartao(String numeroCartao) {
-		System.out.println("CARTAO BLOQUEADO");
-		if (cartaoBloqueadoRepository.findByNumeroCartao(numeroCartao).isPresent()) {
-			System.out.println("IF CARTAO BLOQUEADO");
+		if (cartaoBloqueadoRepository.findByNumeroCartao(numeroCartao).isPresent()) 
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Este Cartão está bloqueado");
-		}
+		
 	}
 
 }

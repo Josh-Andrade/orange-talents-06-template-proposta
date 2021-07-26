@@ -17,9 +17,9 @@ public class VerificarSeCartaoExiste implements CartaoEventos {
 
 	@Override
 	public void verificarNumeroCartao(String numeroCartao) {
-		if (propostaRepository.findByCartao_NumeroCartao(numeroCartao).isEmpty()) {
+		if (propostaRepository.findByCartao_NumeroCartao(numeroCartao).isEmpty()) 
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cartão não encontrado");
-		}
+		
 	}
 
 }

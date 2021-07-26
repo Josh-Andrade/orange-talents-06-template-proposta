@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import br.com.orange.proposta.proposta.shared.external.dto.AnaliseRequest;
 import br.com.orange.proposta.proposta.shared.external.dto.AnaliseResponse;
 
-@FeignClient(url = "${analise.host}" , name = "solicitacao-analise-resource")
+@FeignClient(url = "${analise.host}" , name = "solicitacao-analise-documento-resource")
 public interface AnaliseFinanceiraRequest {
 
 	@PostMapping("/api/solicitacao")

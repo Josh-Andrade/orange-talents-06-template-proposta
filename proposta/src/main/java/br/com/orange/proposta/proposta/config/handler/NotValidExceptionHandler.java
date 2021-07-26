@@ -23,7 +23,7 @@ public class NotValidExceptionHandler {
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public List<ErrorResponse> handler(MethodArgumentNotValidException argumentNotValidException) {
-		List<FieldError> fields = argumentNotValidException.getFieldErrors();
+		List<FieldError> fields = argumentNotValidException.getBindingResult().getFieldErrors();
 		List<ErrorResponse> errorDto = new ArrayList<>();
 		fields.stream().forEach(f -> {
 			errorDto.add(new ErrorResponse(getMessage(f), f.getField()));

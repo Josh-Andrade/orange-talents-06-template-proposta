@@ -42,7 +42,7 @@ public class Proposta {
 	private Status status;
 	@Embedded
 	private Cartao cartao;
-	
+
 	@Deprecated
 	public Proposta() {
 	}
@@ -75,7 +75,7 @@ public class Proposta {
 	public void setCartao(Cartao cartao) {
 		this.cartao = cartao;
 	}
-	
+
 	public PropostaResponse toResponse() {
 		return new PropostaResponse(documento, nome, verificarCartao(), endereco.toResponse(), status);
 	}

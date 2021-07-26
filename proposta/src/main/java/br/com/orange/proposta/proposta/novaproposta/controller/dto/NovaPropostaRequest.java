@@ -56,6 +56,10 @@ public class NovaPropostaRequest {
 		return numero;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
 	public Proposta toEntity(EnderecoRequest endereco) {
 		return new Proposta(documento, email, nome, salario, endereco.toEntity(complemento, numero));
 	}

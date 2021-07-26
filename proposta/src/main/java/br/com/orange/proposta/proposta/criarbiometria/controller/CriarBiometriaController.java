@@ -42,11 +42,11 @@ public class CriarBiometriaController {
 		verificarRestricoesCartao(numeroCartao);
 		Biometria biometria = biometriaRepository.save(request.toEntity(numeroCartao));
 		URI uri = UriComponentsBuilder.fromPath(BIOMETRIA_PATH).buildAndExpand(biometria.getId()).toUri();
-
 		return ResponseEntity.created(uri).body(uri);
 	}
-	
+
 	private void verificarRestricoesCartao(String numeroCartao) {
 		cartaoEventos.forEach(evento -> evento.verificarNumeroCartao(numeroCartao));
 	}
+
 }

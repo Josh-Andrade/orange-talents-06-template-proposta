@@ -55,12 +55,13 @@ public class BloqueioCartaoController {
 
 	private void notificarSistemaLegado(String numeroCartao, HttpServletRequest request) {
 		try {
-			if (bloquearCartaoRequest.bloquearCartao(numeroCartao,
-					new SistemaResponsavelRequest("Proposta")).getResultado().equals("BLOQUEADO"))
+			if (bloquearCartaoRequest.bloquearCartao(numeroCartao, new SistemaResponsavelRequest("Proposta"))
+					.getResultado().equals("BLOQUEADO"))
 				cartaoBloqueadoRepository.save(new CartaoBloqueado(numeroCartao, RequestUtils.retornaUserAgent(request),
 						RequestUtils.retornaIp(request)));
 		} catch (FeignException e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro ao tentar bloquear o cartão");
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"Ocorreu um erro ao tentar bloquear o cartão");
 		}
 	}
 }

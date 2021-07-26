@@ -1,6 +1,7 @@
 package br.com.orange.proposta.proposta.novaproposta.controller;
 
 import static br.com.orange.proposta.proposta.shared.Constants.PROPOSTA_PATH;
+import static br.com.orange.proposta.proposta.shared.Constants.SPAN_EMAIL_TAG;
 
 import java.net.URI;
 
@@ -30,6 +31,8 @@ import br.com.orange.proposta.proposta.shared.external.ViaCepRequest;
 import br.com.orange.proposta.proposta.shared.external.dto.AnaliseRequest;
 import br.com.orange.proposta.proposta.shared.external.dto.AnaliseResponse;
 import feign.FeignException;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 
 @RestController
 @RequestMapping("/api")
@@ -43,12 +46,16 @@ public class NovaPropostaController {
 
 	private AnaliseFinanceiraRequest analiseFinanceiraRequest;
 
+	private final Tracer tracer;
+
 	public NovaPropostaController(ViaCepRequest viaCepRequest, PropostaRepository propostaRepository,
-			DocumentoPropostaValidator documentoPropostaValidator, AnaliseFinanceiraRequest analiseFinanceiraRequest) {
+			DocumentoPropostaValidator documentoPropostaValidator, AnaliseFinanceiraRequest analiseFinanceiraRequest,
+			Tracer tracer) {
 		this.viaCepRequest = viaCepRequest;
 		this.propostaRepository = propostaRepository;
 		this.documentoPropostaValidator = documentoPropostaValidator;
 		this.analiseFinanceiraRequest = analiseFinanceiraRequest;
+		this.tracer = tracer;
 	}
 
 	@InitBinder
@@ -59,16 +66,22 @@ public class NovaPropostaController {
 	@PostMapping("/proposta")
 	@Transactional
 	public ResponseEntity<?> criarNovaProposta(@RequestBody @Valid NovaPropostaRequest request) {
+
 		EnderecoRequest buscarEnderecoViaCep = buscarEndereco(request.getCep());
-		
+
 		Assert.isTrue(!Boolean.parseBoolean(buscarEnderecoViaCep.getErro()),
 				"Não foi encontrado nenhum endereço com o cep informado");
 
 		Proposta proposta = propostaRepository.save(request.toEntity(buscarEnderecoViaCep));
 		URI uri = UriComponentsBuilder.fromPath(PROPOSTA_PATH).buildAndExpand(proposta.getId()).toUri();
-
+		associarEmailAoBaggage(request);
 		proposta.setStatus(analiseFinanceiraSolicitante(proposta));
 		return ResponseEntity.created(uri).body(uri);
+	}
+
+	private void associarEmailAoBaggage(NovaPropostaRequest request) {
+		Span activeSpan = tracer.activeSpan();
+		activeSpan.setBaggageItem(SPAN_EMAIL_TAG, request.getEmail());
 	}
 
 	private Status analiseFinanceiraSolicitante(Proposta proposta) {

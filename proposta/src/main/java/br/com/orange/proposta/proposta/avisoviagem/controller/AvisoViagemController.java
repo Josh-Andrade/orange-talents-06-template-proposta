@@ -37,6 +37,7 @@ public class AvisoViagemController {
 		this.avisoViagemRepository = avisoViagemRepository;
 		this.cartaoEventos = cartaoEventos;
 		this.notificarViagemRequest = notificarViagemRequest;
+
 	}
 
 	@PostMapping("/cartao/viagem/aviso/{numeroCartao}")
@@ -59,7 +60,8 @@ public class AvisoViagemController {
 						RequestUtils.retornaUserAgent(request), RequestUtils.retornaIp(request)));
 
 		} catch (FeignException e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro ao tentar notificar a viagem");
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"Ocorreu um erro ao tentar notificar a viagem");
 		}
 	}
 

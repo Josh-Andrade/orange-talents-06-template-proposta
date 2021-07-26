@@ -21,6 +21,10 @@ services:
       VIACEP_ENDPOINT:  https://viacep.com.br/ws/
       KEYCLOAK_ISSUER_URI:  http://localhost:18080/auth/realms/proposta-users
       KEYCLOAK_JWK_SET_URI:  http://keycloak:8080/auth/realms/proposta-users/protocol/openid-connect/certs
+      JAEGER_SAMPLER: 1
+      JAEGER_ENDPOINT:  http://jaeger:14268/api/traces
+      JAEGER_ENABLED: 'true'
+      
     networks:
       - proposta      
   mysql:

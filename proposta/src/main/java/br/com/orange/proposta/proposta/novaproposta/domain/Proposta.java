@@ -14,8 +14,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
+
 import br.com.orange.proposta.proposta.acompanhamentoproposta.controller.dto.PropostaResponse;
-import br.com.orange.proposta.proposta.config.validation.CPFOrCNPJ;
 import br.com.orange.proposta.proposta.shared.external.dto.CartaoResponse;
 
 @Entity
@@ -24,7 +26,6 @@ public class Proposta {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@CPFOrCNPJ
 	@NotBlank
 	private String documento;
 	@Email
@@ -49,11 +50,15 @@ public class Proposta {
 
 	public Proposta(@NotBlank String documento, @Email @NotBlank String email, @NotBlank String nome,
 			@NotNull @Positive BigDecimal salario, @NotNull Endereco endereco) {
-		this.documento = documento;
+		this.documento = retornarEncryptor().encrypt(documento);
 		this.email = email;
 		this.nome = nome;
 		this.salario = salario;
 		this.endereco = endereco;
+	}
+
+	private TextEncryptor retornarEncryptor() {
+		return Encryptors.queryableText("password", "5c0744940b5c369b");
 	}
 
 	public Long getId() {
@@ -64,10 +69,6 @@ public class Proposta {
 		this.status = status;
 	}
 
-	public String getDocumento() {
-		return documento;
-	}
-
 	public String getNome() {
 		return nome;
 	}
@@ -76,8 +77,12 @@ public class Proposta {
 		this.cartao = cartao;
 	}
 
+	public String getDocumento() {
+		return retornarEncryptor().decrypt(documento);
+	}
+
 	public PropostaResponse toResponse() {
-		return new PropostaResponse(documento, nome, verificarCartao(), endereco.toResponse(), status);
+		return new PropostaResponse(getDocumento(), nome, verificarCartao(), endereco.toResponse(), status);
 	}
 
 	private CartaoResponse verificarCartao() {

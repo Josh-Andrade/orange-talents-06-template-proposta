@@ -2,6 +2,9 @@ package br.com.orange.proposta.proposta.config.validation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -26,9 +29,10 @@ public class DocumentoPropostaValidator implements Validator {
 		if (errors.hasErrors()) {
 			return;
 		}
-		NovaPropostaRequest request = (NovaPropostaRequest) target;
 		
-		if (propostaRepository.findByDocumento(request.getDocumento()).isPresent()) {
+		NovaPropostaRequest request = (NovaPropostaRequest) target;
+		TextEncryptor encryptor = Encryptors.queryableText("password", "5c0744940b5c369b");
+		if (propostaRepository.findByDocumento(encryptor.encrypt(request.getDocumento())).isPresent()) {
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
 					"Já existe uma proposta atribuida a essa documento");
 		}

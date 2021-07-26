@@ -3,6 +3,7 @@ package br.com.orange.proposta.proposta.avisoviagem.controller;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,8 @@ public class AvisoViagemController {
 		this.notificarViagemRequest = notificarViagemRequest;
 	}
 
-	@PostMapping("/viagem/aviso/{numeroCartao}")
+	@PostMapping("/cartao/viagem/aviso/{numeroCartao}")
+	@Transactional
 	public ResponseEntity<?> avisoViagem(@PathVariable("numeroCartao") String numeroCartao, HttpServletRequest request,
 			@RequestBody @Valid NovoAvisoViagemRequest novoAvisoViagemRequest) {
 

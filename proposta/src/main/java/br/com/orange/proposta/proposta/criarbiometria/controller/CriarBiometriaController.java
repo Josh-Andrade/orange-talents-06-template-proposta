@@ -34,7 +34,7 @@ public class CriarBiometriaController {
 		this.cartaoEventos = cartaoEventos;
 	}
 
-	@PostMapping("/biometria/{numeroCartao}")
+	@PostMapping("/cartao/biometria/{numeroCartao}")
 	@Transactional
 	public ResponseEntity<?> criarBiometria(@PathVariable("numeroCartao") String numeroCartao,
 			@Valid @RequestBody BiometriaRequest request, UriComponentsBuilder uriBuilder) {

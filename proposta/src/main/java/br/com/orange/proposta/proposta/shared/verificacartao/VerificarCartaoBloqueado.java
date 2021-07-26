@@ -1,5 +1,7 @@
 package br.com.orange.proposta.proposta.shared.verificacartao;
 
+import javax.transaction.Transactional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,6 +18,7 @@ public class VerificarCartaoBloqueado implements CartaoEventos {
 	}
 
 	@Override
+	@Transactional
 	public void verificarNumeroCartao(String numeroCartao) {
 		if (cartaoBloqueadoRepository.findByNumeroCartao(numeroCartao).isPresent()) 
 			throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Este Cartão está bloqueado");
